@@ -52,7 +52,7 @@ def explore_data(data,target_col):
     plt.show()
 
     #numeric cols
-    numeric_cols = data.select_dtypes(include="number").columns.drop(target_col)
+    numeric_cols = data.select_dtypes(include="number")
     for col in numeric_cols.columns:
         plt.figure()
         sns.regplot(
