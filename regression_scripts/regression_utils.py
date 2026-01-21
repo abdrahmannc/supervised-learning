@@ -78,6 +78,9 @@ def explore_data(data,target_col):
 
 
 
+# -----------------------------
+# 3 Process data
+# -----------------------------
 def data_process(data, target_col):
     """
     Preprocess a dataset for machine learning.
@@ -101,3 +104,28 @@ def data_process(data, target_col):
     return X, target
 
 
+
+# -----------------------------
+# 4 spliting data
+# -----------------------------
+"""
+Split dataset into train, validation, and test sets.
+Applies stratified splitting if the target is categorical.
+"""
+
+def split_data(X, y, trainSize=0.7):
+    # Check if target is categorical
+    stratify_val = y if y.dtype == "object" or str(y.dtype) == "category" else None
+    
+    # Split train vs temp
+    X_train, X_temp, Y_train, Y_temp = train_test_split(
+        X, y, train_size=trainSize, stratify=stratify_val, random_state=42
+    )
+    
+    # Split temp → val + test evenly
+    stratify_temp = Y_temp if stratify_val is not None else None
+    X_val, X_test, Y_val, Y_test = train_test_split(
+        X_temp, Y_temp, test_size=0.5, stratify=stratify_temp, random_state=42
+    )
+    
+    return X_train, X_val, X_test, Y_train, Y_val, Y_test
