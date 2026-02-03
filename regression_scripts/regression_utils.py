@@ -4,9 +4,10 @@ import os
 import matplotlib.pyplot as plt
 import seaborn as sns
 import numpy as np
+from sklearn.base import accuracy_score
 from sklearn.model_selection import train_test_split
-from sklearn.linear_model import LinearRegression, Ridge
-from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
+from sklearn.tree import DecisionTreeRegressor
+from sklearn.metrics import classification_report, confusion_matrix, mean_squared_error, mean_absolute_error, r2_score
 from statsmodels.stats.outliers_influence import variance_inflation_factor
 
 sns.set_style('whitegrid')
@@ -97,11 +98,11 @@ def data_process(data, target_col):
     """
     target = data[target_col]
 
-    X_numeric = data.select_dtypes(include="number").drop(columns=[target_col], errors="ignore")
-    Y_categorical = pd.get_dummies(data.select_dtypes(include="object"), drop_first=True)
-    X = pd.concat([X_numeric, Y_categorical], axis=1)
+    X = data.drop(columns=[target_col])
+    y=data[target_col]
+    #X = pd.concat([X_numeric, y], axis=1)
 
-    return X, target
+    return X, y
 
 
 
@@ -129,3 +130,17 @@ def split_data(X, y, trainSize=0.7):
     )
     
     return X_train, X_val, X_test, Y_train, Y_val, Y_test
+
+# -----------------------------
+# 5 Train regression tree
+# -----------------------------
+def train_regression_tree(X_train, Y_train, max_depth=None, min_samples_split=2):
+
+    
+    """
+    Train a DecisionTreeRegressor.
+    """
+    model = DecisionTreeRegressor(max_depth=max_depth, min_samples_split=min_samples_split, random_state=42)
+    model.fit(X_train, Y_train)
+    print(f"✅ Regression Tree trained with max_depth={max_depth}")
+    return model
