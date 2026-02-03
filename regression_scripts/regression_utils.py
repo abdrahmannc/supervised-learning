@@ -144,3 +144,16 @@ def train_regression_tree(X_train, Y_train, max_depth=None, min_samples_split=2)
     model.fit(X_train, Y_train)
     print(f"✅ Regression Tree trained with max_depth={max_depth}")
     return model
+
+
+# -----------------------------
+# 6 Evaluate regression tree
+# -----------------------------
+from sklearn.metrics import mean_squared_error, r2_score
+
+def evaluate_decision_tree_reg(model, X, y, name="decisionTreeRegressor"):
+    y_pred = model.predict(X)
+    mse = mean_squared_error(y, y_pred)
+    r2 = r2_score(y, y_pred)
+    print(f"The MSE {mse:.4f}")
+    print(f"R² {r2:.4f}")
