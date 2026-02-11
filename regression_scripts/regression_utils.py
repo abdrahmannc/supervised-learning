@@ -6,7 +6,7 @@ import seaborn as sns
 import numpy as np
 from sklearn.model_selection import train_test_split
 from sklearn.tree import DecisionTreeClassifier
-from sklearn.metrics import accuracy_score, confusion_matrix
+from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
 from statsmodels.stats.outliers_influence import variance_inflation_factor
 
 sns.set_style('whitegrid')
