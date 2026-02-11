@@ -56,25 +56,22 @@ def explore_data(data, target_col):
 # -----------------------------
 # 3 Process data
 # -----------------------------
-def data_process(data, target_col):
+def data_process(data, target_col, feature_cols=None):
     """
     Preprocess a dataset for machine learning.
 
-    Steps:
-    1. Separates the target column from features.
-    2. Selects numeric features and drops the target column.
-    3. One-hot encodes categorical (object) columns with drop_first=True.
-    4. Concatenates numeric and encoded categorical features.
-
+    Preprocess dataset for DecisionTreeClassifier with a categorical target.
     Returns:
         X (pd.DataFrame): Preprocessed feature matrix.
-        target (pd.Series): Target column.
     """
     target = data[target_col]
 
-    X_numeric = data.select_dtypes(include="number").drop(columns=[target_col], errors="ignore")
-    Y_categorical = pd.get_dummies(data.select_dtypes(include="object"), drop_first=True)
-    X = pd.concat([X_numeric, Y_categorical], axis=1)
+    if feature_cols is not None:
+        X=data[feature_cols].copy()
+
+    else:
+        X=data.drop(columns=[target_col])
+        
 
     return X, target
 
