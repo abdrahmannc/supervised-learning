@@ -84,24 +84,54 @@ def data_process(data, target_col, feature_cols=None):
 Split dataset into train, validation, and test sets.
 Applies stratified splitting if the target is categorical.
 """
-
-def split_data(X, y, trainSize=0.7):
-    # Check if target is categorical
-    stratify_val = y if y.dtype == "object" or str(y.dtype) == "category" else None
+def split_data(X, y, train_size=0.7, val_size=0.15, test_size=0.15, random_state=42):
+    """
+    Split dataset with proper stratification.
     
-    # Split train vs temp
+    Parameters:
+    - train_size: proportion for training (default 0.7)
+    - val_size: proportion for validation (default 0.15)
+    - test_size: proportion for testing (default 0.15)
+    """
+    # Verify splits sum to 1
+    assert abs(train_size + val_size + test_size - 1.0) < 1e-10, "Splits must sum to 1"
+    
+    # Always stratify for classification (few unique values)
+    is_classification = len(np.unique(y)) < 50
+    
+    # First split: train vs (val+test)
     X_train, X_temp, Y_train, Y_temp = train_test_split(
-        X, y, train_size=trainSize, stratify=stratify_val, random_state=42
+        X, y,
+        train_size=train_size,
+        stratify=y if is_classification else None,
+        random_state=random_state
     )
     
-    # Split temp → val + test evenly
-    stratify_temp = Y_temp if stratify_val is not None else None
+    # Second split: val vs test from temp
+    # Calculate what proportion of temp should be test
+    test_of_temp = test_size / (val_size + test_size)
+    
     X_val, X_test, Y_val, Y_test = train_test_split(
-        X_temp, Y_temp, test_size=0.5, stratify=stratify_temp, random_state=42
+        X_temp, Y_temp,
+        test_size=test_of_temp,
+        stratify=Y_temp if is_classification else None,
+        random_state=random_state
     )
+    
+    # Verify distributions
+    if is_classification:
+        print("\n📊 Class distribution check:")
+        original_dist = pd.Series(y).value_counts(normalize=True).sort_index()
+        train_dist = pd.Series(Y_train).value_counts(normalize=True).sort_index()
+        val_dist = pd.Series(Y_val).value_counts(normalize=True).sort_index()
+        test_dist = pd.Series(Y_test).value_counts(normalize=True).sort_index()
+        
+        print(f"Original:  {original_dist.values}")
+        print(f"Train:     {train_dist.values}")
+        print(f"Val:       {val_dist.values}")
+        print(f"Test:      {test_dist.values}")
     
     return X_train, X_val, X_test, Y_train, Y_val, Y_test
-
 
 
 
