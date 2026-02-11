@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import numpy as np
 from sklearn.model_selection import train_test_split
-from sklearn.tree import DecisionTreeClassifier
+from sklearn.tree import DecisionTreeClassifier, plot_tree
 from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
 from statsmodels.stats.outliers_influence import variance_inflation_factor
 
@@ -255,9 +255,19 @@ def plot_predictions_vs_actual(y_test, y_pred, title="Predictions vs Actual"):
 y_actual = ['Critical']*30 + ['Normal']*23 + ['Warning']*14 + ['Warning']*8
 y_pred =   ['Critical']*30 + ['Normal']*23 + ['Warning']*14 + ['Normal']*8
 
-# Shuffle them to mix (optional - but more realistic)
-from sklearn.utils import shuffle
-y_actual, y_pred = shuffle(y_actual, y_pred, random_state=42)
 
-# Plot!
-plot_predictions_vs_actual(y_actual, y_pred, "Test Set: Predictions vs Actual")
+# -----------------------------
+# 9 plot tree
+# -----------------------------
+def visualize_decision_tree(model, X_train):
+    plt.figure(figsize=(16,8))
+    from sklearn.tree import plot_tree
+    plot_tree(
+        model,
+        feature_names=X_train.columns,  
+        class_names=model.classes_,
+        filled=True,
+        rounded=True,
+        fontsize=10
+    )
+    plt.show()
