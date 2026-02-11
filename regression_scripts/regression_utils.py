@@ -132,3 +132,19 @@ def evaluate_tree_classifier_model(model, X, y, name="Dataset"):
     return y_pred
 
 
+
+# -----------------------------
+# 7 confusion matrix
+# -----------------------------
+def plot_confusion_matrix(model, X, y, title="Confusion Matrix"):
+    y_pred = model.predict(X)
+    cm = confusion_matrix(y, y_pred, labels=model.classes_)
+
+    sns.heatmap(cm, annot=True, fmt="d",
+                xticklabels=model.classes_,
+                yticklabels=model.classes_)
+
+    plt.xlabel("Predicted")
+    plt.ylabel("Actual")
+    plt.title(title)
+    plt.show()
