@@ -104,3 +104,17 @@ def split_data(X, y, trainSize=0.7):
     )
     
     return X_train, X_val, X_test, Y_train, Y_val, Y_test
+
+
+
+
+# -----------------------------
+# 5 train model
+# -----------------------------
+
+def train_tree_classifier(X_train, Y_train, max_depth=3):
+    model = DecisionTreeClassifier(max_depth=max_depth, random_state=42)
+    model.fit(X_train, Y_train)
+    return model
+
+
