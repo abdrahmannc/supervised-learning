@@ -5,8 +5,8 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import numpy as np
 from sklearn.model_selection import train_test_split
-from sklearn.linear_model import LinearRegression, Ridge
-from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.metrics import accuracy_score, confusion_matrix
 from statsmodels.stats.outliers_influence import variance_inflation_factor
 
 sns.set_style('whitegrid')
@@ -27,53 +27,28 @@ def load_data(file_path, sep=","):
 # -----------------------------
 # 2 Explore data
 # -----------------------------
-def explore_data(data,target_col):
-    target=data[target_col]
+def explore_data(data, target_col):
     print("Description")
     print(data.describe())
 
-    #the heatmap
-    X_numeric = data.select_dtypes(include="number").corr()
-
-    sns.heatmap(
-        X_numeric,
-        annot=True,
-        fmt=".2f",
-        cmap="coolwarm",
-        vmin=-1,
-        vmax=1,
-        center=0,
-        linewidths=0.5,
-        square=True
-    )
-
-    plt.title("Correlation Matrix", fontsize=14)
-    plt.tight_layout()
+    # Target distribution
+    plt.figure()
+    sns.countplot(x=data[target_col])
+    plt.title("Target Distribution")
     plt.show()
 
-    #numeric cols
-    numeric_cols = data.select_dtypes(include="number")
-    for col in numeric_cols.columns:
-        plt.figure()
-        sns.regplot(
-            x=data[col],
-            y=target,
-            scatter_kws={
-                "alpha": 0.6,
-                "color": "blue",
-                "label": "Observation"
-            },
-            line_kws={
-                "alpha": 0.8,
-                "color": "orange",
-                "label": f"{col} effect"
-            }
-        )
+    # Correlation heatmap (numeric only)
+    X_numeric = data.select_dtypes(include="number").corr()
+    sns.heatmap(X_numeric, annot=True, cmap="coolwarm", center=0)
+    plt.title("Correlation Matrix")
+    plt.show()
 
-        plt.title(f"{col} vs {target.name}")
-        plt.xlabel(col)
-        plt.ylabel(target.name)
-        plt.legend()
+    # Boxplots per class
+    numeric_cols = data.select_dtypes(include="number").columns
+    for col in numeric_cols:
+        plt.figure()
+        sns.boxplot(x=data[target_col], y=data[col])
+        plt.title(f"{col} distribution by {target_col}")
         plt.show()
 
 
