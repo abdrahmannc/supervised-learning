@@ -178,3 +178,86 @@ def plot_confusion_matrix(model, X, y, title="Confusion Matrix"):
     plt.ylabel("Actual")
     plt.title(title)
     plt.show()
+
+
+
+
+
+# -----------------------------
+# 8 plot predictions vs actual
+# -----------------------------
+def plot_predictions_vs_actual(y_test, y_pred, title="Predictions vs Actual"):
+    """
+    Plot predicted vs actual values as a line comparison.
+    Works for both numerical and categorical predictions.
+    """
+    # Convert to DataFrame for easy plotting
+    results = pd.DataFrame({
+        'Actual': y_test,
+        'Predicted': y_pred
+    }).reset_index(drop=True)
+    
+    # If categorical, convert to codes for plotting
+    if results['Actual'].dtype == 'object' or str(results['Actual'].dtype) == 'category':
+        # Store original labels
+        labels = np.unique(results[['Actual', 'Predicted']].values)
+        label_to_num = {label: i for i, label in enumerate(labels)}
+        
+        # Convert to numbers
+        results['Actual_num'] = results['Actual'].map(label_to_num)
+        results['Predicted_num'] = results['Predicted'].map(label_to_num)
+        
+        y_actual = results['Actual_num']
+        y_predicted = results['Predicted_num']
+        y_labels = labels
+    else:
+        y_actual = results['Actual']
+        y_predicted = results['Predicted']
+        y_labels = None
+    
+    # Create plot
+    plt.figure(figsize=(15, 6))
+    
+    # Plot lines
+    plt.plot(y_actual.index, y_actual, 'o-', label='Actual', 
+             color='blue', linewidth=2, markersize=6)
+    plt.plot(y_predicted.index, y_predicted, 's--', label='Predicted', 
+             color='red', linewidth=2, markersize=5)
+    
+    # Highlight errors
+    errors = y_actual != y_predicted
+    if errors.any():
+        plt.scatter(errors[errors].index, y_actual[errors], 
+                   color='yellow', s=100, edgecolor='black', 
+                   label='Mismatch', zorder=5)
+    
+    plt.xlabel('Sample Index', fontsize=12)
+    plt.ylabel('Class' if y_labels is not None else 'Value', fontsize=12)
+    plt.title(title, fontsize=14)
+    plt.legend()
+    plt.grid(True, alpha=0.3)
+    
+    # Set y-ticks to class names if categorical
+    if y_labels is not None:
+        plt.yticks(range(len(y_labels)), y_labels)
+    
+    plt.tight_layout()
+    plt.show()
+    
+    # Print summary
+    correct = (~errors).sum()
+    total = len(errors)
+    print(f"✅ Correct: {correct}/{total} ({correct/total*100:.1f}%)")
+    print(f"❌ Errors:  {errors.sum()}/{total} ({errors.sum()/total*100:.1f}%)")
+
+
+# Recreate your test results from confusion matrix
+y_actual = ['Critical']*30 + ['Normal']*23 + ['Warning']*14 + ['Warning']*8
+y_pred =   ['Critical']*30 + ['Normal']*23 + ['Warning']*14 + ['Normal']*8
+
+# Shuffle them to mix (optional - but more realistic)
+from sklearn.utils import shuffle
+y_actual, y_pred = shuffle(y_actual, y_pred, random_state=42)
+
+# Plot!
+plot_predictions_vs_actual(y_actual, y_pred, "Test Set: Predictions vs Actual")
