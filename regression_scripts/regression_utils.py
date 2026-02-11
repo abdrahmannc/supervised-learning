@@ -115,3 +115,20 @@ def train_tree_classifier(X_train, Y_train, max_depth=3):
     return model
 
 
+
+# -----------------------------
+# 6 evaluate model
+# -----------------------------
+
+def evaluate_tree_classifier_model(model, X, y, name="Dataset"):
+    y_pred = model.predict(X)
+
+    print(f"\n{name} Evaluation")
+    print("-" * 30)
+    print("Accuracy:", accuracy_score(y, y_pred))
+    print("\nClassification Report:")
+    print(classification_report(y, y_pred))
+
+    return y_pred
+
+
