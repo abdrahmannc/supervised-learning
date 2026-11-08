@@ -1,0 +1,17 @@
+digraph Tree {
+node [shape=box, style="filled, rounded", color="black", fontname="helvetica"] ;
+edge [fontname="helvetica"] ;
+0 [label="Temperature <= 34.925\ngini = 0.66\nsamples = 350\nvalue = [140, 108, 102]\nclass = Critical", fillcolor="#fceee5"] ;
+1 [label="Vibration <= 4.007\ngini = 0.631\nsamples = 256\nvalue = [46, 108, 102]\nclass = Normal", fillcolor="#f7fefa"] ;
+0 -> 1 [labeldistance=2.5, labelangle=45, headlabel="True"] ;
+2 [label="Temperature <= 29.882\ngini = 0.5\nsamples = 210\nvalue = [0.0, 108.0, 102.0]\nclass = Normal", fillcolor="#f4fef8"] ;
+1 -> 2 ;
+3 [label="gini = 0.315\nsamples = 133\nvalue = [0, 107, 26]\nclass = Normal", fillcolor="#69eba0"] ;
+2 -> 3 ;
+4 [label="gini = 0.026\nsamples = 77\nvalue = [0, 1, 76]\nclass = Warning", fillcolor="#833ce5"] ;
+2 -> 4 ;
+5 [label="gini = 0.0\nsamples = 46\nvalue = [46, 0, 0]\nclass = Critical", fillcolor="#e58139"] ;
+1 -> 5 ;
+6 [label="gini = 0.0\nsamples = 94\nvalue = [94, 0, 0]\nclass = Critical", fillcolor="#e58139"] ;
+0 -> 6 [labeldistance=2.5, labelangle=-45, headlabel="False"] ;
+}
